@@ -5,7 +5,8 @@ const { User } = require('../models/user');
 const ErrorBadRequest = require('../utils/ErrorBadRequest');
 const ErrorNotFound = require('../utils/ErrorNotFound');
 const ErrorUnauthorized = require('../utils/ErrorUnauthorized');
-const { SALT_ROUNDS } = require('../config/index');
+const ErrorConflict = require('../utils/ErrorConflict');
+const { SALT_ROUNDS, JWT_DEV } = require('../config/index');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -97,7 +98,7 @@ exports.login = (req, res, next) => {
         const id = user._id.toString();
         const token = jwt.sign(
           { _id: id },
-          NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+          NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV,
           { expiresIn: '7d' },
         );
         res.send({ jwt: token });

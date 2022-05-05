@@ -15,6 +15,7 @@ const validators = require('./middlewares/validations');
 const ErrorNotFound = require('./utils/ErrorNotFound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
+const { MONGO } = require('./config/index');
 
 const app = express();
 
@@ -36,7 +37,7 @@ app.use(errors());
 app.use(errorHandler);
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+  await mongoose.connect(MONGO);
 
   app.listen(PORT, () => {
     console.log(`Server listen on ${PORT}`);

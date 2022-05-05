@@ -13,6 +13,6 @@ moviesRoutes.get('/movies', auth, getMovies);
 
 moviesRoutes.post('/movies', validators.movie, auth, express.json(), createMovie);
 
-moviesRoutes.delete('/movies/_id', validators.movieId, auth, deleteMovieById);
+moviesRoutes.delete('/movies/:id', validators.movieId, auth, deleteMovieById);
 
 exports.moviesRoutes = moviesRoutes;

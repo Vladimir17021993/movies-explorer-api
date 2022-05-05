@@ -15,15 +15,15 @@ exports.getMovies = (req, res, next) => {
 };
 
 exports.deleteMovieById = (req, res, next) => {
-  Movie.findById(req.params.movieId)
+  Movie.findById(req.params.id)
     .orFail(() => {
-      throw new ErrorNotFound(`Карточка с ID ${req.params.movieId} не найдена.`);
+      throw new ErrorNotFound(`Карточка с ID ${req.params.id} не найдена.`);
     })
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id) {
         throw new ErrorWrongUser('Нельзя удалять чужие карточки');
       }
-      return Movie.findByIdAndDelete(req.params.movieId).then(() => {
+      return Movie.findByIdAndDelete(req.params.id).then(() => {
         res.send({ message: `Карточка с id ${movie._id} удалена` });
       });
     })
@@ -39,8 +39,33 @@ exports.deleteMovieById = (req, res, next) => {
 
 exports.createMovie = (req, res, next) => {
   const ownerId = req.user._id;
-  const { country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN } = req.body;
-  Movie.create({ country, director, duration, year, description, image, trailerLink, thumbnail, owner: ownerId, movieId, nameRU, nameEN })
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    id,
+    nameRU,
+    nameEN,
+  } = req.body;
+  Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    owner: ownerId,
+    id,
+    nameRU,
+    nameEN,
+  })
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
