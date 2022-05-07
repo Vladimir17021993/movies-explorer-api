@@ -5,10 +5,11 @@ const validator = require('validator');
 
 const register = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().min(2).max(30).messages({
-      'string.min': 'Имя не может быть короче 2ух символов',
-      'string.max': 'Имя не может быть длинее 30 символов',
-    }),
+    name: Joi.string().required().min(2).max(30)
+      .messages({
+        'string.min': 'Имя не может быть короче 2ух символов',
+        'string.max': 'Имя не может быть длинее 30 символов',
+      }),
     email: Joi.string()
       .required()
       .custom((value, helper) => {
@@ -21,10 +22,9 @@ const register = celebrate({
         'any.required': 'Email не указан',
         'string.notEmail': 'Email некорректный',
       }),
-    password: Joi.string().required()
-      .messages({
-        'any.required': 'Пароль не указан',
-      }),
+    password: Joi.string().required().messages({
+      'any.required': 'Пароль не указан',
+    }),
   }),
 });
 

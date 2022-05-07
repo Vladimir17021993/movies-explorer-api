@@ -23,14 +23,19 @@ exports.getUser = (req, res, next) => {
 
 exports.updateProfile = (req, res, next) => {
   const { name, email } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    { new: true, runValidators: true },
-  )
-    .orFail(() => {
-      throw new ErrorNotFound(`Пользователь с ID ${req.user._id} не найден.`);
-    })
+  User.findOne({ email }).then((user) => {
+    if (user) {
+      throw new ErrorConflict(`Пользователь ${email} уже зарегестрирован.`);
+    }
+  })
+    .then(() => User.findByIdAndUpdate(
+      req.user._id,
+      { name, email },
+      { new: true, runValidators: true },
+    )
+      .orFail(() => {
+        throw new ErrorNotFound(`Пользователь с ID ${req.user._id} не найден.`);
+      }))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {

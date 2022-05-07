@@ -1,6 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const ErrorForbidden = require('../utils/ErrorForbidden');
+const { JWT_DEV } = require("../config/index");
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -13,7 +14,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(
       token,
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      NODE_ENV === "production" ? JWT_SECRET : JWT_DEV,
     );
   } catch (err) {
     return next(new ErrorForbidden('Нет прав'));

@@ -4,14 +4,16 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-const { PORT = 3000 } = process.env;
+const {
+  PORT = 3000,
+  DB_URL = 'https://api.mesto.ralchenko.nomoredomains.xyz/moviesdb',
+  NODE_ENV,
+} = process.env;
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const { usersRoutes } = require('./routes/users');
 const { moviesRoutes } = require('./routes/movies');
-const { createUser, login } = require('./controllers/users');
 const errorHandler = require('./middlewares/errorHandler');
-const validators = require('./middlewares/validations');
 const ErrorNotFound = require('./utils/ErrorNotFound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
@@ -26,8 +28,6 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(usersRoutes);
 app.use(moviesRoutes);
-app.post('/signup', validators.register, express.json(), createUser);
-app.post('/signin', validators.register, express.json(), login);
 app.use(auth, (req, res, next) => {
   next(new ErrorNotFound('Страница с указаным URL не найдена.'));
 });
@@ -37,7 +37,7 @@ app.use(errors());
 app.use(errorHandler);
 
 async function main() {
-  await mongoose.connect(MONGO);
+  await mongoose.connect(NODE_ENV === 'production' ? DB_URL : MONGO);
 
   app.listen(PORT, () => {
     console.log(`Server listen on ${PORT}`);

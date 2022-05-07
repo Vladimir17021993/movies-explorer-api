@@ -1,6 +1,6 @@
 const { Movie } = require('../models/movie');
 const ErrorBadRequest = require('../utils/ErrorBadRequest');
-const ErrorWrongUser = require('../utils/ErrorWrongUser');
+const ErrorForbidden = require('../utils/ErrorForbidden');
 const ErrorNotFound = require('../utils/ErrorNotFound');
 
 exports.getMovies = (req, res, next) => {
@@ -21,7 +21,7 @@ exports.deleteMovieById = (req, res, next) => {
     })
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id) {
-        throw new ErrorWrongUser('Нельзя удалять чужие карточки');
+        throw new ErrorForbidden('Нельзя удалять чужие карточки');
       }
       return Movie.findByIdAndDelete(req.params.id).then(() => {
         res.send({ message: `Карточка с id ${movie._id} удалена` });
@@ -48,7 +48,7 @@ exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    id,
+    movieId,
     nameRU,
     nameEN,
   } = req.body;
@@ -62,7 +62,7 @@ exports.createMovie = (req, res, next) => {
     trailerLink,
     thumbnail,
     owner: ownerId,
-    id,
+    movieId,
     nameRU,
     nameEN,
   })
