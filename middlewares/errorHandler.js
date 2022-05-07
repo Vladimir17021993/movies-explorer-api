@@ -5,6 +5,7 @@ const errorHandler = (err, req, res, next) => {
     message: err.message,
     err,
   });
+  next();
 };
 
 module.exports = errorHandler;

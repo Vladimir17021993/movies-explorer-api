@@ -4,7 +4,7 @@ const {
   getUser,
   createUser,
   login,
-} = require("../controllers/users");
+} = require('../controllers/users');
 const auth = require('../middlewares/auth');
 const validators = require('../middlewares/validations');
 
@@ -21,12 +21,12 @@ usersRoutes.patch(
 );
 
 usersRoutes.post(
-  "/signup",
+  '/signup',
   validators.register,
   express.json(),
-  createUser
+  createUser,
 );
 
-usersRoutes.post("/signin", validators.register, express.json(), login);
+usersRoutes.post('/signin', validators.register, express.json(), login);
 
 exports.usersRoutes = usersRoutes;
